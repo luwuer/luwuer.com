@@ -10,7 +10,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="stylus" scoped>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
