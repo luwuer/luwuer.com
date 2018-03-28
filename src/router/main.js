@@ -5,7 +5,6 @@ import Test from '@/components/Test'
 
 Vue.use(Router)
 
-console.log('router----------main')
 export default new Router({
   // 不能使用history模式，否则路由不生效
   // mode: 'history',

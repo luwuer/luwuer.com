@@ -118,10 +118,10 @@ exports.entries = function() {
     var entryFiles = glob.sync(PAGE_PATH + '/*/*.js')
     var map = {}
     entryFiles.forEach((filePath) => {
-        var filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'))
-        map[filename] = filePath.replace(PAGE_PATH, '../src/pages')
+      var filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'))
+      map[filename] = filePath
     })
-    console.log(map)
+    // console.log(map)
     return map
 }
 
@@ -155,7 +155,7 @@ exports.htmlPlugin = function() {
         }
         arr.push(new HtmlWebpackPlugin(conf))
     })
-    console.log(arr)
+    // console.log(arr)
     return arr
 }
 // ---------------------多页面相关---------------------
