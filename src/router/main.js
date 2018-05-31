@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Homepage from '@/components/Homepage'
+import Hello from '@/components/Homepage'
 import Test from '@/components/Test'
 
 Vue.use(Router)
@@ -12,7 +12,7 @@ export default new Router({
     {
       path: '/',
       name: 'Homepage',
-      component: Homepage
+      component: Hello
     },
     {
       path: '/test',
