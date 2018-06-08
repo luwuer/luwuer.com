@@ -70,16 +70,15 @@ function renderImg(ctx, chunks, num = chunks.length - 1, perNum = Math.floor(chu
   // 渲染到画布
   for (let i = 0; i < perNum; i++) {
     let chunk = chunks[num - i]
-    // if ()
     if (!chunk) break
     ctx.putImageData(chunk.data, chunk.x, chunk.y)
   }
 
-  // 未渲染块多余每次渲染块则递归
+  // 未渲染块存在则递归
   if (num > 0) {
     setTimeout(() => {
       renderImg(ctx, chunks, num - perNum, perNum)
-    }, 10)
+    }, 5)
   }
 }
 
@@ -148,7 +147,7 @@ export default {
         img.src = this.imgMap[i]
         img.onload = () => {
           ctx.drawImage(img, 0, 0, this.winInfo.ww, this.winInfo.wh)
-          let chunks = this.getChunks(ctx, 20)
+          let chunks = this.getChunks(ctx, 40)
           renderImg(this.canvasCover.getContext('2d'), chunks)
         }
       }
