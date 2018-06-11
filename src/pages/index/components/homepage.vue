@@ -29,7 +29,7 @@ class Chunk {
 }
 
 /**
- * @description 生成随机数
+ * @description 生成随机数[洗牌算法]
  */
 function random(min, max) {
   if (max == null) {
@@ -54,14 +54,14 @@ function shuffle(arr) {
 }
 
 /**
- * @description 把图片块渲染到canvas
+ * @description 把图片块渲染到canvas,动画a
  * @param {Obejct} ctx canvas绘图环境
  * @param {Array} chunks 图片块
  * @param {Number} num 未渲染块
  * @param {Number} perNum 每次渲染块
  */
-function renderImg(ctx, chunks, num = chunks.length - 1, perNum = Math.floor(chunks.length / 100)) {
-  console.log('renderImg..')
+function renderImg_ta(ctx, chunks, num = chunks.length - 1, perNum = Math.floor(chunks.length / 100)) {
+  console.log('renderImg_ta..')
   console.log(num)
   console.log(perNum)
   // 未渲染块数等于图片块长度时打乱图片块
@@ -77,10 +77,17 @@ function renderImg(ctx, chunks, num = chunks.length - 1, perNum = Math.floor(chu
   // 未渲染块存在则递归
   if (num > 0) {
     setTimeout(() => {
-      renderImg(ctx, chunks, num - perNum, perNum)
+      renderImg_ta(ctx, chunks, num - perNum, perNum)
     }, 5)
   }
 }
+
+/**
+ * @description 把图片块渲染到canvas,动画b
+ */
+// function renderImg_tb(ctx) {
+
+// }
 
 export default {
   name: 'homepage',
@@ -148,7 +155,7 @@ export default {
         img.onload = () => {
           ctx.drawImage(img, 0, 0, this.winInfo.ww, this.winInfo.wh)
           let chunks = this.getChunks(ctx, 40)
-          renderImg(this.canvasCover.getContext('2d'), chunks)
+          renderImg_ta(this.canvasCover.getContext('2d'), chunks)
         }
       }
     },
