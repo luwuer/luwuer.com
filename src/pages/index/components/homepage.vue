@@ -1,7 +1,7 @@
 <template>
   <div id="homepage"
-       ref="homepage">
-    <div class="home-bgs">
+       ref="homepage" :class="{blur: !initImgLoad}">
+    <div class="home-bgs" :class="{transparent: !initImgLoad}">
       <canvas ref="canvas-bg"
               class="home-bg">
         您的浏览器不支持Canvas，请更换最新的浏览器</canvas>
@@ -11,7 +11,7 @@
         您的浏览器不支持Canvas，请更换最新的浏览器</canvas>
     </div>
     <div class="home-contents">
-
+      test.......
     </div>
   </div>
 </template>
@@ -100,7 +100,8 @@ export default {
       canvas: null, // canvas dom
       canvasCover: null, // canvas dom
       imgMap: index,
-      winInfo: {}
+      winInfo: {},
+      initImgLoad: false
     }
   },
   created() {
@@ -157,6 +158,7 @@ export default {
         let i = Math.floor(Math.random() * 17)
         img.src = this.imgMap[i]
         img.onload = () => {
+          this.initImgLoad = true
           ctx.drawImage(img, 0, 0, this.winInfo.ww, this.winInfo.wh)
           let chunks = this.getChunks(ctx, 40)
           renderImg(this.canvasCover.getContext('2d'), chunks)
@@ -207,10 +209,27 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.transparent {
+  opacity 0
+}
+
+.opacity {
+  opacity 1
+}
+
+.blur {
+  filter blur(66px)
+}
+
 #homepage {
   overflow hidden
+  background url('~@index/assets/img/3_min.jpg')
+  background-size cover
+  // transition all 1s
 
   .home-bgs {
+    transition all 2s
+
     .home-bg-cover {
       position fixed
       top 0
@@ -219,6 +238,11 @@ export default {
   }
 
   .home-contents {
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
   }
 }
 </style>
