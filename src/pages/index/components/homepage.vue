@@ -3,10 +3,12 @@
        ref="homepage">
     <div class="home-bgs">
       <canvas ref="canvas-bg"
-              class="home-bg"></canvas>
+              class="home-bg">
+        您的浏览器不支持Canvas，请更换最新的浏览器</canvas>
       <canvas ref="canvas-bg-cover"
               class="home-bg-cover"
-              style="background: #fff;"></canvas>
+              style="background: #fff;">
+        您的浏览器不支持Canvas，请更换最新的浏览器</canvas>
     </div>
     <div class="home-contents">
 
@@ -54,16 +56,18 @@ function shuffle(arr) {
 }
 
 /**
- * @description 把图片块渲染到canvas
+ * @description [随机渲染]把图片块渲染到canvas
  * @param {Obejct} ctx canvas绘图环境
  * @param {Array} chunks 图片块
  * @param {Number} num 未渲染块
  * @param {Number} perNum 每次渲染块
  */
-function renderImg(ctx, chunks, num = chunks.length - 1, perNum = Math.floor(chunks.length / 100)) {
-  console.log('renderImg..')
-  console.log(num)
-  console.log(perNum)
+function renderImg(
+  ctx,
+  chunks,
+  num = chunks.length - 1,
+  perNum = Math.floor(chunks.length / 100)
+) {
   // 未渲染块数等于图片块长度时打乱图片块
   if (num === chunks.length - 1) chunks = shuffle(chunks)
 
@@ -82,6 +86,12 @@ function renderImg(ctx, chunks, num = chunks.length - 1, perNum = Math.floor(chu
     }, 10)
   }
 }
+
+/**
+ * @description [有序渲染]把图片块渲染到canvas
+ * @param {Obejct} ctx canvas绘图环境
+ */
+// function renderImg_a(ctx) {}
 
 export default {
   name: 'homepage',
@@ -148,7 +158,7 @@ export default {
         img.src = this.imgMap[i]
         img.onload = () => {
           ctx.drawImage(img, 0, 0, this.winInfo.ww, this.winInfo.wh)
-          let chunks = this.getChunks(ctx, 20)
+          let chunks = this.getChunks(ctx, 40)
           renderImg(this.canvasCover.getContext('2d'), chunks)
         }
       }
