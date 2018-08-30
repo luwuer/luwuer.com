@@ -100,6 +100,7 @@ export default {
     }
   },
   created() {
+    console.log(this.imgMap)
     // resize
     let timer = 0
     window.onresize = () => {

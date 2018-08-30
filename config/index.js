@@ -7,17 +7,22 @@ const path = require('path')
 module.exports = {
   dev: {
 
-    // Paths
+    // 子目录，一般存放css,js,image等文件
     assetsSubDirectory: 'static',
+    // 根目录
     assetsPublicPath: '/',
+    // 可利用该属性解决跨域的问题
     proxyTable: {},
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
     port: 9001, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: true,
+    // 浏览器错误提示
     errorOverlay: true,
+    // 跨平台错误提示
     notifyOnErrors: true,
+    // 使用文件系统(file system)获取文件改动的通知devServer.watchOptions
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
     // Use Eslint Loader?
@@ -38,8 +43,10 @@ module.exports = {
     // If you have problems debugging vue-files in devtools,
     // set this to false - it *may* help
     // https://vue-loader.vuejs.org/en/options.html#cachebusting
+    // 使缓存失效
     cacheBusting: true,
 
+    // 代码压缩后进行调bug定位将非常困难，于是引入sourcemap记录压缩前后的位置信息记录，当产生错误时直接定位到未压缩前的位置，将大大的方便我们调试
     cssSourceMap: true
   },
 

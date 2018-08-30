@@ -118,10 +118,10 @@ exports.entries = function() {
     var entryFiles = glob.sync(PAGE_PATH + '/*/*.js')
     var map = {}
     entryFiles.forEach((filePath) => {
-      var filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'))
+      var filename = filePath.match(/[\w-_]+(?=(\/[\w-_]+\.js$))/)[0]
       map[filename] = filePath
     })
-    // console.log(map)
+    console.log(map)
     return map
 }
 
@@ -133,7 +133,7 @@ exports.htmlPlugin = function() {
     let entryHtml = glob.sync(PAGE_PATH + '/*/*.html')
     let arr = []
     entryHtml.forEach((filePath) => {
-        let filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'))
+        let filename = filePath.match(/[\w-_]+(?=(\/[\w-_]+\.html$))/)[0]
         let conf = {
             // 模板来源
             template: filePath,
@@ -155,6 +155,7 @@ exports.htmlPlugin = function() {
         }
         arr.push(new HtmlWebpackPlugin(conf))
     })
+    // console.log('htmlPlugins...')
     // console.log(arr)
     return arr
 }
