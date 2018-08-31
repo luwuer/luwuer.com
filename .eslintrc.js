@@ -26,7 +26,7 @@ module.exports = {
     'no-return-await': 0,
     "quotes": [2, "single"], //单引号
     "no-console": 0, //不禁用console
-    "no-debugger": 2, //禁用debugger
+    "no-debugger": 0, //禁用debugger
     "no-var": 0, //对var警告
     "semi": 0, //不强制使用分号
     "no-irregular-whitespace": 0, //不规则的空白不允许
@@ -34,7 +34,7 @@ module.exports = {
     "eol-last": 0, //文件以单一的换行符结束
     "no-unused-vars": [2, { "vars": "all", "args": "after-used" }], //不能有声明后未被使用的变量或参数
     "no-underscore-dangle": 0, //标识符不能以_开头或结尾
-    "no-alert": 2, //禁止使用alert confirm prompt
+    "no-alert": 0, //禁止使用alert confirm prompt
     "no-lone-blocks": 0, //禁止不必要的嵌套块
     "no-class-assign": 2, //禁止给类赋值
     "no-cond-assign": 2, //禁止在条件表达式中使用赋值语句
