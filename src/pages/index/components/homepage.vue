@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { index } from '@/assets/js/common/img-import.js'
+import { index } from '@index/assets/js/img-import.js'
 
 /**
  * @description 图像块类
@@ -31,7 +31,7 @@ class Chunk {
 }
 
 /**
- * @description 生成随机数
+ * @description 生成随机数[洗牌算法]
  */
 function random(min, max) {
   if (max == null) {
@@ -74,16 +74,15 @@ function renderImg(
   // 渲染到画布
   for (let i = 0; i < perNum; i++) {
     let chunk = chunks[num - i]
-    // if ()
     if (!chunk) break
     ctx.putImageData(chunk.data, chunk.x, chunk.y)
   }
 
-  // 未渲染块多余每次渲染块则递归
+  // 未渲染块存在则递归
   if (num > 0) {
     setTimeout(() => {
       renderImg(ctx, chunks, num - perNum, perNum)
-    }, 10)
+    }, 5)
   }
 }
 
@@ -105,6 +104,7 @@ export default {
     }
   },
   created() {
+    console.log(this.imgMap)
     // resize
     let timer = 0
     window.onresize = () => {
@@ -223,7 +223,7 @@ export default {
 
 #homepage {
   overflow hidden
-  background url('~@index/assets/img/3_min.jpg')
+  background url('~@index/assets/img/3.min.jpg')
   background-size cover
   // transition all 1s
 

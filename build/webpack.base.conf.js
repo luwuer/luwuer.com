@@ -36,7 +36,8 @@ module.exports = {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       '@': resolve('src'),
-      '@index': resolve('src/pages/index')
+      '@index': resolve('src/pages/index'),
+      '@pp': resolve('src/pages/pixel-palette')
     }
   },
   module: {

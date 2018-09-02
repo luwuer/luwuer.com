@@ -4,10 +4,10 @@
 
 <script>
 export default {
-  name: 'ever-test',
+  name: 'ever-test2',
   data () {
     return {
-      msg: 'ever components test...'
+      msg: 'ever components test...2'
     }
   },
   created () {
