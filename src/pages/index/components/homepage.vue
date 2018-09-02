@@ -56,7 +56,7 @@ function shuffle(arr) {
 }
 
 /**
- * @description [随机渲染]把图片块渲染到canvas
+ * @description 把图片块渲染到canvas,动画a
  * @param {Obejct} ctx canvas绘图环境
  * @param {Array} chunks 图片块
  * @param {Number} num 未渲染块
