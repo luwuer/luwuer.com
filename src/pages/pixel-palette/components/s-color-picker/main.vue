@@ -1,5 +1,6 @@
 <template>
-  <div id="sColorPicker" :style="{'border-top': `4px solid ${value}`}">
+  <div id="sColorPicker"
+       :style="{'border-top': `4px solid ${value}`}">
     <div class="default-plate">
       <span class="label">选取颜色</span>
       <ul class="color-wrapper">
@@ -8,8 +9,10 @@
             :key="index"
             :style="{'background': color, 'border': renderBorder(color) ? '1px solid #eee' : 'none'}"
             @click="pick(color)"></li>
-        <li class="color-item more-color" title="自定义颜色">
-          <input type="color" v-model="csutomerColor">
+        <li class="color-item more-color"
+            title="自定义颜色"
+            :style="{'border': renderBorder(csutomerColor) ? '1px solid #eee' : 'none'}">
+          <el-color-picker v-model="csutomerColor"></el-color-picker>
         </li>
       </ul>
     </div>
@@ -27,6 +30,8 @@
 </template>
 
 <script>
+import 'element-ui/packages/theme-chalk/lib/input.css'
+import 'element-ui/packages/theme-chalk/lib/button.css'
 import { ColorPicker } from 'element-ui'
 import ls from '@/assets/js/ls'
 
@@ -61,7 +66,7 @@ const DEFAULTS = [
 export default {
   name: 'sColorPicker',
   components: {
-    ColorPicker
+    'el-color-picker': ColorPicker
   },
   props: {
     value: {
@@ -76,13 +81,13 @@ export default {
       csutomerColor: '#ff0000'
     }
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     init() {
       let temp = ls.getItem('history-colors')
+      console.log(temp)
       if (temp && temp.length) {
-        this.histories = ls.getItem('history-colors') || []
+        this.histories = temp || []
         this.$emit('input', this.histories[0])
         this.csutomerColor = this.histories[0]
       }
@@ -125,6 +130,11 @@ export default {
   },
   watch: {
     csutomerColor(newVal) {
+      if (newVal === null) {
+        this.csutomerColor = '#ffffff'
+        return
+      }
+
       if (newVal !== this.value) {
         this.pick(newVal)
       }
@@ -167,16 +177,35 @@ export default {
         margin-right 12px
         border-radius 6px
         cursor pointer
+        transition all .2s
+
+        &:hover {
+          transform scale(1.2)
+        }
 
         &:last-child {
           margin-right 0
+        }
+
+        .el-color-picker {
+          height 24px
+
+          .el-color-picker__trigger {
+            width 54px
+            height 24px
+            padding 0
+            border none
+
+            .el-color-picker__color {
+              border none
+            }
+          }
         }
       }
 
       .more-color {
         width 54px
         overflow hidden
-        border 1px solid #eee
 
         &>input {
           height 24px
@@ -186,6 +215,5 @@ export default {
       }
     }
   }
-
 }
 </style>

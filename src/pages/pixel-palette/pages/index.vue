@@ -4,37 +4,31 @@
     <div class="color-pick-wrapper">
       <s-color-picker v-model="color"></s-color-picker>
     </div>
-    <div class="palette-wrapper">
-      <canvas :width="widthStr" :height="heightStr"></canvas>
-    </div>
+
+    <s-canvas></s-canvas>
   </div>
 </template>
 
 <script>
-import sColorPicker from '@pp/components/s-color-picker/index'
+import SColorPicker from '@pp/components/s-color-picker/index'
+import SCanvas from '@pp/components/s-canvas/index'
 
 export default {
   name: 'index',
   components: {
-    sColorPicker
+    SColorPicker,
+    SCanvas
   },
   data() {
     return {
       title: 'Pixel Palette',
-      width: 1024,
-      height: 512,
-      color: '#e4e4e4'
+      color: '#333333'
     }
   },
-  computed: {
-    widthStr() {
-      return `${this.width}px`
-    },
-    heightStr() {
-      return `${this.height}px`
-    }
-  },
-  created() {}
+  computed: {},
+  methods: {},
+  created() {},
+  mounted() {}
 }
 </script>
 
@@ -46,16 +40,9 @@ export default {
     width 1024px
     margin-left auto
     margin-right auto
-    box-shadow 3px 4px 4px #3333
+    box-shadow 2px 3px 4px #3333
+    border-radius 4px
     margin-bottom 12px
-  }
-
-  .palette-wrapper {
-    display inline-block
-
-    canvas {
-      background #233
-    }
   }
 }
 </style>
