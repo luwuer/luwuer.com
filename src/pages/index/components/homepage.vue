@@ -111,7 +111,7 @@ export default {
       clearTimeout(timer)
       timer = setTimeout(() => {
         this.getWindowInfo()
-      }, 30)
+      }, 70)
     }
     // 双击
     window.ondblclick = () => {
@@ -168,10 +168,9 @@ export default {
     /**
      * @description 获取图片的像素小块er
      * @param {Obejct} ctx canvas绘图环境
-     * @param {Number} size 小块大小size*size
+     * @param {Number} size 大小size*size
      */
     getChunks(ctx, size) {
-      // eslint-disable-line
       let chunks = []
       // 获取canvas的像素数据
       let imgData = ctx.getImageData(0, 0, this.winInfo.ww, this.winInfo.wh)
