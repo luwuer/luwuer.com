@@ -160,15 +160,15 @@ export default {
 
     .label {
       flex 0 0 60px
-      line-height 40px
+      line-height 32px
       font-size 12px
     }
 
     .color-wrapper {
       flex 1 1 auto
-      height 40px
-      padding-top 8px
-      padding-bottom 8px
+      height 32px
+      padding-top 4px
+      padding-bottom 4px
 
       .color-item {
         display inline-block

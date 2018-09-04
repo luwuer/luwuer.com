@@ -160,7 +160,7 @@ export default {
         img.onload = () => {
           this.initImgLoad = true
           ctx.drawImage(img, 0, 0, this.winInfo.ww, this.winInfo.wh)
-          let chunks = this.getChunks(ctx, 40)
+          let chunks = this.getChunks(ctx, 12)
           renderImg(this.canvasCover.getContext('2d'), chunks)
         }
       }

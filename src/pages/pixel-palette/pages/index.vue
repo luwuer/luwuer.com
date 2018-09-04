@@ -1,11 +1,10 @@
 <template>
   <div id="index">
-    <h1>{{title}}</h1>
     <div class="color-pick-wrapper">
       <s-color-picker v-model="color"></s-color-picker>
     </div>
 
-    <s-canvas></s-canvas>
+    <s-canvas :color="color"></s-canvas>
   </div>
 </template>
 
@@ -38,11 +37,9 @@ export default {
 
   .color-pick-wrapper {
     width 1024px
-    margin-left auto
-    margin-right auto
+    margin 8px auto
     box-shadow 2px 3px 4px #3333
     border-radius 4px
-    margin-bottom 12px
   }
 }
 </style>

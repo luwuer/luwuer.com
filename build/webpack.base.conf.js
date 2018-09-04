@@ -37,7 +37,8 @@ module.exports = {
     alias: {
       '@': resolve('src'),
       '@index': resolve('src/pages/index'),
-      '@pp': resolve('src/pages/pixel-palette')
+      '@pp': resolve('src/pages/pixel-palette'),
+      'static': resolve('static')
     }
   },
   module: {
