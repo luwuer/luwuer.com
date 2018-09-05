@@ -12,9 +12,10 @@
 </template>
 
 <script>
-import config from 'static/pages/pixel-palette/config'
+import config from 'static/pixel-palette/config'
 import sColorPicker from '@pp/components/s-color-picker/index'
 import img_1 from '@index/assets/img/demo2.png'
+import { getImageData } from '@pp/assets/js/api'
 
 export default {
   name: 'index',
@@ -68,6 +69,52 @@ export default {
     }
   },
   methods: {
+    init() {
+      getImageData().then(data => {
+        console.time()
+        this.resourceData = data
+        let pixelData = data.data
+        for (let index = 0; index < pixelData.length; index += 4) {
+          // let width = config.WIDTH / config.RATIO.default
+          // let x = (index / 4) % width
+          // let y = Math.floor(index / 4 / width)
+          // let r = data[index] === undefined ? 255 : data[index]
+          // let g = data[index + 1] === undefined ? 255 : data[index + 1]
+          // let b = data[index + 2] === undefined ? 255 : data[index + 2]
+          let width = data.width
+          let x = (index / 4) % width
+          let y = Math.floor(index / 4 / width)
+          let r = pixelData[index] === undefined ? 255 : pixelData[index]
+          let g = pixelData[index + 1] === undefined ? 255 : pixelData[index + 1]
+          let b = pixelData[index + 2] === undefined ? 255 : pixelData[index + 2]
+          this.drawDot({
+            x,
+            y,
+            color: `rgba(${r}, ${g}, ${b}, 255)`
+          })
+        }
+        console.timeEnd()
+      })
+    },
+    drawDot({ x, y, color = this.color, save = false }) {
+      this.ctx.fillStyle = color || this.color
+      this.ctx.fillRect(x * this.ratio, y * this.ratio, this.ratio, this.ratio)
+
+      if (save) {
+        // 保存点数据请求
+        console.log(`save x = ${x},y = ${y},color = ${color}`)
+        this.saveDot({
+          x,
+          y
+        })
+      }
+    },
+    saveDot({ x, y, color = this.colorRGBA }) {
+      debugger
+      let index = (y * this.resourceData.width + x) * 4
+      this.resourceData.data.splice(index, 4, ...color)
+      console.log(this.resourceData.data)
+    },
     /**
      * @description 颜色数组转颜色
      */
@@ -86,8 +133,9 @@ export default {
       if (this.ratio < config.RATIO.max) {
         this.ratio += config.RATIO.default
         this.$nextTick(() => {
-          this.removeImgSmooth()
-          this.ctx.drawImage(this.testImg, 0, 0, this.width, this.height)
+          // this.removeImgSmooth()
+          // this.ctx.drawImage(this.imageData, 0, 0, this.width, this.height)
+
         })
       }
     },
@@ -97,7 +145,9 @@ export default {
 
         this.$nextTick(() => {
           this.removeImgSmooth()
-          this.ctx.drawImage(this.testImg, 0, 0, this.width, this.height)
+          // this.ctx.drawImage(this.imageData, 0, 0, this.width, this.height)
+          this.ctx.scale(this.canvasRatio, this.canvasRatio)
+          this.ctx.putImageData(this.imageData, 0, 0)
         })
       }
     },
@@ -122,53 +172,55 @@ export default {
      * @param {Object} position 位置
      * @param {Boolean} save 是否保存该点
      */
-    drawDot(position, save = true) {
-      console.log(position)
-      let x = Math.floor(position.x / this.ratio) * this.ratio
-      let y = Math.floor(position.y / this.ratio) * this.ratio
+    // drawDot(position, save = true) {
+    //   console.log(position)
+    //   let x = Math.floor(position.x / this.ratio) * this.ratio
+    //   let y = Math.floor(position.y / this.ratio) * this.ratio
 
-      if (save) {
-        this.ctx.fillStyle = this.color
-        console.time()
-        this.ctx.fillRect(x, y, this.ratio, this.ratio)
-        console.timeEnd()
+    //   if (save) {
+    //     this.ctx.fillStyle = this.color
+    //     console.time()
+    //     this.ctx.fillRect(x, y, this.ratio, this.ratio)
+    //     console.timeEnd()
 
-        console.log('保存数据...')
-        // save data
-        this.imageData.save()
-        this.lastDot = null
-      } else {
-        console.time()
-        // remove last dot
-        if (this.lastDot) {
-          this.ctx.fillStyle = this.lastDot.color
-          this.ctx.fillRect(
-            this.lastDot.x,
-            this.lastDot.y,
-            this.ratio,
-            this.ratio
-          )
-        }
+    //     console.log('保存数据...')
+    //     // save data
+    //     this.imageData = this.ctx.getImageData(0, 0, this.width, this.height)
+    //     this.lastDot = null
+    //   } else {
+    //     console.time()
+    //     if (this.lastDot) {
+    //       // if in same dot
+    //       if (this.lastDot.x === x && this.lastDot.y === y) return
 
-        // save to lastDot
-        let colorLast = this.getCurrentColor(
-          Math.floor(position.x / this.canvasRatio) + 1,
-          Math.floor(position.y / this.canvasRatio) + 1
-        )
-        console.log(colorLast)
-        this.lastDot = {
-          x,
-          y,
-          color: colorLast
-        }
-        console.timeEnd()
+    //       // remove last dot
+    //       this.ctx.fillStyle = this.lastDot.color
+    //       this.ctx.fillRect(
+    //         this.lastDot.x,
+    //         this.lastDot.y,
+    //         this.ratio,
+    //         this.ratio
+    //       )
+    //     }
 
-        // render current dot
-        this.ctx.fillStyle = this.color
-        this.ctx.fillRect(x, y, this.ratio, this.ratio)
-        console.log(this.lastDot)
-      }
-    },
+    //     // save to lastDot
+    //     let colorLast = this.getCurrentColor(
+    //       Math.floor(position.x / this.canvasRatio) + 1,
+    //       Math.floor(position.y / this.canvasRatio) + 1
+    //     )
+    //     console.log(colorLast)
+    //     this.lastDot = {
+    //       x,
+    //       y,
+    //       color: colorLast
+    //     }
+    //     console.timeEnd()
+
+    //     // render current dot
+    //     this.ctx.fillStyle = this.color
+    //     this.ctx.fillRect(x, y, this.ratio, this.ratio)
+    //   }
+    // },
     mousedownHandle(e) {
       this.mousedown = true
       this.moveLastPosition.x = e.clientX
@@ -183,19 +235,21 @@ export default {
         this.$refs.wrapper.scrollLeft -= realMove.x
         this.$refs.wrapper.scrollTop -= realMove.y
       } else if (this.canvasRatio > 1) {
-        this.drawDot(
-          {
-            x: e.offsetX,
-            y: e.offsetY
-          },
-          false
-        )
+        // this.drawDot(
+        //   {
+        //     x: e.offsetX,
+        //     y: e.offsetY
+        //   },
+        //   false
+        // )
       }
     },
     clickHandle(e) {
+      console.log(e)
       this.drawDot({
-        x: e.offsetX,
-        y: e.offsetY
+        x: Math.floor(e.offsetX / this.ratio),
+        y: Math.floor(e.offsetY / this.ratio),
+        save: true
       })
     },
     keydownHandle(e) {
@@ -220,11 +274,13 @@ export default {
         this.ctx = this.$refs.cv.getContext('2d', {
           alpha: false
         })
-        this.removeImgSmooth()
-        this.ctx.drawImage(this.testImg, 0, 0, this.width, this.height)
-        this.imageData = this.ctx.getImageData(0, 0, this.width, this.height)
-        console.log(this.imageData)
-        console.log(this.imageData.data.slice((14 * 1024 + 38) * 4, (14 * 1024 + 38 + 6) * 4))
+        // this.removeImgSmooth()
+        this.init()
+
+        // this.ctx.drawImage(this.testImg, 0, 0, this.width, this.height)
+        // this.imageData = this.ctx.getImageData(0, 0, this.width, this.height)
+        // this.dealData()
+        // console.log(this.imageData.data.slice((14 * 1024 + 38) * 4, (14 * 1024 + 38 + 6) * 4))
         // let imageData = ls.getItem('imageData')
         // if (imageData) {
         //   this.ctx.drawImage(imageData, 0, 0)
