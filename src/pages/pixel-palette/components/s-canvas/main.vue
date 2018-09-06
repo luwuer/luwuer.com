@@ -28,7 +28,7 @@ export default {
   data() {
     return {
       ratio: config.RATIO.default, // 像素放大倍率，一个最小控制方块 = ratio * ratio （个像素）
-      lastDot: null,
+      lastResetDot: null,
       level: 1,
       testImg: new Image(),
       moveLastPosition: {
@@ -71,30 +71,26 @@ export default {
   methods: {
     init() {
       getImageData().then(data => {
-        console.time()
         this.resourceData = data
-        let pixelData = data.data
-        for (let index = 0; index < pixelData.length; index += 4) {
-          // let width = config.WIDTH / config.RATIO.default
-          // let x = (index / 4) % width
-          // let y = Math.floor(index / 4 / width)
-          // let r = data[index] === undefined ? 255 : data[index]
-          // let g = data[index + 1] === undefined ? 255 : data[index + 1]
-          // let b = data[index + 2] === undefined ? 255 : data[index + 2]
-          let width = data.width
-          let x = (index / 4) % width
-          let y = Math.floor(index / 4 / width)
-          let r = pixelData[index] === undefined ? 255 : pixelData[index]
-          let g = pixelData[index + 1] === undefined ? 255 : pixelData[index + 1]
-          let b = pixelData[index + 2] === undefined ? 255 : pixelData[index + 2]
-          this.drawDot({
-            x,
-            y,
-            color: `rgba(${r}, ${g}, ${b}, 255)`
-          })
-        }
-        console.timeEnd()
+        this.drawResource(data)
       })
+    },
+    drawResource(data) {
+      console.time()
+      let pixelData = data.data
+      let width = data.width
+
+      for (let index = 0; index < pixelData.length; index += 4) {
+        let x = (index / 4) % width
+        let y = Math.floor(index / 4 / width)
+        let color = this.tranArrToColor([pixelData[index], pixelData[index + 1], pixelData[index + 2], pixelData[index + 3]])
+        this.drawDot({
+          x,
+          y,
+          color
+        })
+      }
+      console.timeEnd()
     },
     drawDot({ x, y, color = this.color, save = false }) {
       this.ctx.fillStyle = color || this.color
@@ -110,44 +106,44 @@ export default {
       }
     },
     saveDot({ x, y, color = this.colorRGBA }) {
-      debugger
+      console.time()
       let index = (y * this.resourceData.width + x) * 4
       this.resourceData.data.splice(index, 4, ...color)
-      console.log(this.resourceData.data)
+      console.timeEnd()
     },
     /**
      * @description 颜色数组转颜色
      */
     tranArrToColor(arr) {
-      return `rgba(${arr[0]}, ${arr[1]}, ${arr[2]}, ${arr[3]})`
+      let r = arr[0] === undefined ? 255 : arr[0]
+      let g = arr[1] === undefined ? 255 : arr[1]
+      let b = arr[2] === undefined ? 255 : arr[2]
+      let a = arr[3] === undefined ? 255 : arr[3]
+      return `rgba(${r}, ${g}, ${b}, ${a})`
     },
+    /**
+     * @description 获取坐标已存在点的颜色
+     */
     getCurrentColor(x, y) {
-      console.log(x, y)
-      let data = this.imageData.data
-      let beginIndex = (this.imageData.width * y + x) * 4
+      let beginIndex = (this.resourceData.width * y + x) * 4
       let endIndex = beginIndex + 4
-      let arr = data.slice(beginIndex, endIndex)
+      let arr = this.resourceData.data.slice(beginIndex, endIndex)
       return this.tranArrToColor(arr)
     },
     largen() {
       if (this.ratio < config.RATIO.max) {
-        this.ratio += config.RATIO.default
+        this.ratio += config.RATIO.default * 2
         this.$nextTick(() => {
-          // this.removeImgSmooth()
-          // this.ctx.drawImage(this.imageData, 0, 0, this.width, this.height)
-
+          this.drawResource(this.resourceData)
         })
       }
     },
     shrink() {
       if (this.ratio > config.RATIO.min) {
-        this.ratio -= config.RATIO.default
+        this.ratio -= config.RATIO.default * 2
 
         this.$nextTick(() => {
-          this.removeImgSmooth()
-          // this.ctx.drawImage(this.imageData, 0, 0, this.width, this.height)
-          this.ctx.scale(this.canvasRatio, this.canvasRatio)
-          this.ctx.putImageData(this.imageData, 0, 0)
+          this.drawResource(this.resourceData)
         })
       }
     },
@@ -167,60 +163,6 @@ export default {
       this.moveLastPosition.y = position.y
       return { x, y }
     },
-    /**
-     * @description 根据鼠标位置判断、并画点
-     * @param {Object} position 位置
-     * @param {Boolean} save 是否保存该点
-     */
-    // drawDot(position, save = true) {
-    //   console.log(position)
-    //   let x = Math.floor(position.x / this.ratio) * this.ratio
-    //   let y = Math.floor(position.y / this.ratio) * this.ratio
-
-    //   if (save) {
-    //     this.ctx.fillStyle = this.color
-    //     console.time()
-    //     this.ctx.fillRect(x, y, this.ratio, this.ratio)
-    //     console.timeEnd()
-
-    //     console.log('保存数据...')
-    //     // save data
-    //     this.imageData = this.ctx.getImageData(0, 0, this.width, this.height)
-    //     this.lastDot = null
-    //   } else {
-    //     console.time()
-    //     if (this.lastDot) {
-    //       // if in same dot
-    //       if (this.lastDot.x === x && this.lastDot.y === y) return
-
-    //       // remove last dot
-    //       this.ctx.fillStyle = this.lastDot.color
-    //       this.ctx.fillRect(
-    //         this.lastDot.x,
-    //         this.lastDot.y,
-    //         this.ratio,
-    //         this.ratio
-    //       )
-    //     }
-
-    //     // save to lastDot
-    //     let colorLast = this.getCurrentColor(
-    //       Math.floor(position.x / this.canvasRatio) + 1,
-    //       Math.floor(position.y / this.canvasRatio) + 1
-    //     )
-    //     console.log(colorLast)
-    //     this.lastDot = {
-    //       x,
-    //       y,
-    //       color: colorLast
-    //     }
-    //     console.timeEnd()
-
-    //     // render current dot
-    //     this.ctx.fillStyle = this.color
-    //     this.ctx.fillRect(x, y, this.ratio, this.ratio)
-    //   }
-    // },
     mousedownHandle(e) {
       this.mousedown = true
       this.moveLastPosition.x = e.clientX
@@ -235,17 +177,41 @@ export default {
         this.$refs.wrapper.scrollLeft -= realMove.x
         this.$refs.wrapper.scrollTop -= realMove.y
       } else if (this.canvasRatio > 1) {
-        // this.drawDot(
-        //   {
-        //     x: e.offsetX,
-        //     y: e.offsetY
-        //   },
-        //   false
-        // )
+        console.log(this.lastResetDot)
+        let x = Math.floor(e.offsetX / this.ratio)
+        let y = Math.floor(e.offsetY / this.ratio)
+
+        // last reset dot is null
+        if (this.lastResetDot !== null) {
+          // if in same dot
+          if (this.lastResetDot.x === x && this.lastResetDot.y === y) return
+
+          // remove last reset dot
+          this.drawDot({
+            x: this.lastResetDot.x,
+            y: this.lastResetDot.y,
+            color: this.lastResetDot.color
+          })
+        }
+
+        // update last reset dot
+        let colorLast = this.getCurrentColor(x, y)
+        this.lastResetDot = {
+          x,
+          y,
+          color: colorLast
+        }
+
+        // draw current dot
+        this.drawDot({
+          x,
+          y
+        })
       }
     },
     clickHandle(e) {
       console.log(e)
+      this.lastResetDot = null
       this.drawDot({
         x: Math.floor(e.offsetX / this.ratio),
         y: Math.floor(e.offsetY / this.ratio),
@@ -276,18 +242,6 @@ export default {
         })
         // this.removeImgSmooth()
         this.init()
-
-        // this.ctx.drawImage(this.testImg, 0, 0, this.width, this.height)
-        // this.imageData = this.ctx.getImageData(0, 0, this.width, this.height)
-        // this.dealData()
-        // console.log(this.imageData.data.slice((14 * 1024 + 38) * 4, (14 * 1024 + 38 + 6) * 4))
-        // let imageData = ls.getItem('imageData')
-        // if (imageData) {
-        //   this.ctx.drawImage(imageData, 0, 0)
-        // } else {
-        //   this.ctx.drawImage(this.testImg, 0, 0, this.width, this.height)
-        //   ls.setItem('imageData', this.ctx.getImageData(0, 0, this.width, this.height))
-        // }
       }
 
       this.$refs.cv.addEventListener('click', this.clickHandle)
