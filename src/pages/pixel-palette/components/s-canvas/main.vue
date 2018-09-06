@@ -2,7 +2,7 @@
   <div ref="wrapper"
        class="palette-wrapper"
        :style="wrapperStyle"
-       :class="{'can-move': controlDown}">
+       :class="{'can-move': dragFlag}">
     <canvas ref="cv"
             class="test"
             :width="widthStr"
@@ -27,6 +27,8 @@ export default {
   },
   data() {
     return {
+      dragFlag: false, // 鼠标移动标识
+      mousedownFlag: false, // 鼠标按下标识
       ratio: config.RATIO.default, // 像素放大倍率，一个最小控制方块 = ratio * ratio （个像素）
       lastResetDot: null,
       level: 1,
@@ -83,7 +85,12 @@ export default {
       for (let index = 0; index < pixelData.length; index += 4) {
         let x = (index / 4) % width
         let y = Math.floor(index / 4 / width)
-        let color = this.tranArrToColor([pixelData[index], pixelData[index + 1], pixelData[index + 2], pixelData[index + 3]])
+        let color = this.tranArrToColor([
+          pixelData[index],
+          pixelData[index + 1],
+          pixelData[index + 2],
+          pixelData[index + 3]
+        ])
         this.drawDot({
           x,
           y,
@@ -110,6 +117,15 @@ export default {
       let index = (y * this.resourceData.width + x) * 4
       this.resourceData.data.splice(index, 4, ...color)
       console.timeEnd()
+    },
+    resetDot() {
+      // remove last reset dot
+      this.drawDot({
+        x: this.lastResetDot.x,
+        y: this.lastResetDot.y,
+        color: this.lastResetDot.color
+      })
+      this.lastResetDot = null
     },
     /**
      * @description 颜色数组转颜色
@@ -164,12 +180,19 @@ export default {
       return { x, y }
     },
     mousedownHandle(e) {
-      this.mousedown = true
+      this.mousedownFlag = true
+      this.dragFlag = false
       this.moveLastPosition.x = e.clientX
       this.moveLastPosition.y = e.clientY
     },
     mousemoveHandle(e) {
-      if (this.mousedown) {
+      if (this.mousedownFlag) {
+        this.dragFlag = true
+
+        if (this.lastResetDot !== null) {
+          this.resetDot()
+        }
+
         let realMove = this.getRealMove({
           x: e.clientX,
           y: e.clientY
@@ -177,7 +200,6 @@ export default {
         this.$refs.wrapper.scrollLeft -= realMove.x
         this.$refs.wrapper.scrollTop -= realMove.y
       } else if (this.canvasRatio > 1) {
-        console.log(this.lastResetDot)
         let x = Math.floor(e.offsetX / this.ratio)
         let y = Math.floor(e.offsetY / this.ratio)
 
@@ -186,12 +208,7 @@ export default {
           // if in same dot
           if (this.lastResetDot.x === x && this.lastResetDot.y === y) return
 
-          // remove last reset dot
-          this.drawDot({
-            x: this.lastResetDot.x,
-            y: this.lastResetDot.y,
-            color: this.lastResetDot.color
-          })
+          this.resetDot()
         }
 
         // update last reset dot
@@ -209,14 +226,25 @@ export default {
         })
       }
     },
-    clickHandle(e) {
-      console.log(e)
-      this.lastResetDot = null
-      this.drawDot({
-        x: Math.floor(e.offsetX / this.ratio),
-        y: Math.floor(e.offsetY / this.ratio),
-        save: true
-      })
+    mouseoutHandle() {
+      if (this.lastResetDot !== null) {
+        this.resetDot()
+      }
+    },
+    mouseupHandle(e) {
+      debugger
+      if (!this.dragFlag) {
+        this.lastResetDot = null
+        this.drawDot({
+          x: Math.floor(e.offsetX / this.ratio),
+          y: Math.floor(e.offsetY / this.ratio),
+          save: true
+        })
+      }
+
+      // reset state
+      this.mousedownFlag = false
+      this.dragFlag = false
     },
     keydownHandle(e) {
       if (this.controlDown) return
@@ -269,13 +297,14 @@ export default {
 
       this.$refs.cv.addEventListener('mousedown', this.mousedownHandle)
 
-      document.addEventListener('mouseup', () => {
-        this.mousedown = false
-      })
-
       this.$refs.cv.addEventListener('mousemove', this.mousemoveHandle)
 
+      this.$refs.cv.addEventListener('mouseout', this.mouseoutHandle)
+
+      this.$refs.cv.addEventListener('mouseup', this.mouseupHandle)
+
       // document.addEventListener('keydown', this.keydownHandle)
+
       // document.addEventListener('keyup', this.keyupHandle)
     })
   }
