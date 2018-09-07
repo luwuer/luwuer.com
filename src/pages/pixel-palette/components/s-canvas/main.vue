@@ -232,14 +232,13 @@ export default {
       }
     },
     mouseupHandle(e) {
-      debugger
-      if (!this.dragFlag) {
-        this.lastResetDot = null
+      if (!this.dragFlag && this.canvasRatio > 1) {
         this.drawDot({
           x: Math.floor(e.offsetX / this.ratio),
           y: Math.floor(e.offsetY / this.ratio),
           save: true
         })
+        this.lastResetDot = null
       }
 
       // reset state

@@ -4,11 +4,11 @@
     <div class="home-bgs" :class="{transparent: !initImgLoad}">
       <canvas ref="canvas-bg"
               class="home-bg">
-        您的浏览器不支持Canvas，请更换最新的浏览器</canvas>
+        您的浏览器不支持Canvas，请升级浏览器版本</canvas>
       <canvas ref="canvas-bg-cover"
               class="home-bg-cover"
               style="background: #fff;">
-        您的浏览器不支持Canvas，请更换最新的浏览器</canvas>
+        您的浏览器不支持Canvas，请升级浏览器版本</canvas>
     </div>
     <div class="home-contents">
       test.......
