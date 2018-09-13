@@ -2,6 +2,8 @@ const config = {
 
   port: 3000,
 
+  root: __dirname,
+
   database: {
     DATABASE: 'test',
     USERNAME: 'root',

@@ -4,6 +4,7 @@
 // const views = require('koa-views')
 // const koaStatic = require('koa-static')
 
+require('./assets/js/require-reload.js')
 const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 const koaLogger = require('koa-logger')
