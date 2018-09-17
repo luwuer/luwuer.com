@@ -1,5 +1,5 @@
 const userService = require('../services/user')
-const userErrorCode = require('../assets/codes/user')
+// const userErrorCode = require('../assets/codes/user')
 
 /**
  * @description 注册
