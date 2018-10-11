@@ -4,14 +4,15 @@
 // const views = require('koa-views')
 // const koaStatic = require('koa-static')
 
-require('./assets/js/require-reload.js')
 const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 const koaLogger = require('koa-logger')
 const session = require('koa-session-minimal')
 const MysqlStore = require('koa-mysql-session')
-
 const config = require('../config')
+
+// 重载require，添加别名
+require('./assets/js/require-reload.js')
 
 const app = new Koa()
 
