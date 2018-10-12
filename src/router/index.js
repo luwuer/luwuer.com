@@ -5,7 +5,7 @@ import Homepage from '@/pages/index/components/homepage'
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   routes: [
     {
       path: '/',

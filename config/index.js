@@ -12,7 +12,20 @@ module.exports = {
     // 根目录
     assetsPublicPath: '/',
     // 可利用该属性解决跨域的问题
-    proxyTable: {},
+    proxyTable: {
+      '/p1': {
+        target: 'http://localhost:9001',
+        pathRewrite: {
+          '^/p1': '/main.html#'
+        }
+      },
+      '/p2': {
+        target: 'http://localhost:9001',
+        pathRewrite: {
+          '^/p2': '/pixel-palette.html#'
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
