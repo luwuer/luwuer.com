@@ -5,6 +5,7 @@
     </div>
 
     <s-canvas :color="color"></s-canvas>
+
   </div>
 </template>
 
@@ -20,8 +21,14 @@ export default {
   },
   data() {
     return {
-      title: 'Pixel Palette',
-      color: '#333333'
+      color: '#333333',
+      dots: [
+        {
+          user: 'luwuer',
+          time: '2018-10-29 15:23:33.755',
+          email: 'html6@foxmail.com'
+        }
+      ]
     }
   },
   computed: {},

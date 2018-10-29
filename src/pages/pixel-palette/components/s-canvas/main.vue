@@ -5,8 +5,8 @@
        :class="{'can-move': dragFlag}">
     <canvas ref="cv"
             class="test"
-            :width="widthStr"
-            :height="heightStr">
+            :width="width"
+            :height="height">
     </canvas>
   </div>
 </template>
@@ -23,7 +23,8 @@ export default {
     sColorPicker
   },
   props: {
-    color: String
+    color: String,
+    imageData: Object
   },
   data() {
     return {
@@ -56,12 +57,6 @@ export default {
     wrapperStyle() {
       return `width: ${config.WIDTH}px; height: ${config.HEIGHT}px`
     },
-    widthStr() {
-      return `${this.width}px`
-    },
-    heightStr() {
-      return `${this.height}px`
-    },
     colorRGBA() {
       let r = parseInt(this.color.slice(1, 3), 16)
       let g = parseInt(this.color.slice(3, 5), 16)
@@ -73,12 +68,15 @@ export default {
   methods: {
     init() {
       getImageData().then(data => {
+        console.log(data)
         this.resourceData = data
         this.drawResource(data)
       })
     },
     drawResource(data) {
       console.time()
+      // let imageData = new ImageData(Uint8ClampedArray.from(data.data), data.width, data.length)
+      // this.ctx.putImageData(imageData, 0, 0, 0, 0, this.width, this.height)
       let pixelData = data.data
       let width = data.width
 
@@ -149,18 +147,22 @@ export default {
     largen() {
       if (this.ratio < config.RATIO.max) {
         this.ratio += config.RATIO.default * 2
-        this.$nextTick(() => {
-          this.drawResource(this.resourceData)
-        })
+        this.ctx.scale(this.canvasRatio, this.canvasRatio)
+        // this.$nextTick(() => {
+        //   this.drawResource(this.resourceData)
+        // })
+        // this.ratio = config.RATIO.max
       }
     },
     shrink() {
       if (this.ratio > config.RATIO.min) {
         this.ratio -= config.RATIO.default * 2
+        this.ctx.scale(this.canvasRatio, this.canvasRatio)
+        // this.ratio = config.RATIO.min
 
-        this.$nextTick(() => {
-          this.drawResource(this.resourceData)
-        })
+        // this.$nextTick(() => {
+        //   this.drawResource(this.resourceData)
+        // })
       }
     },
     removeImgSmooth() {
@@ -186,7 +188,11 @@ export default {
       this.moveLastPosition.y = e.clientY
     },
     mousemoveHandle(e) {
-      if (this.mousedownFlag) {
+      let xMove = Math.abs(this.moveLastPosition.x - e.clientX) > this.ratio
+      let yMove = Math.abs(this.moveLastPosition.y - e.clientY) > this.ratio
+      let moveFlag = xMove || yMove
+
+      if (this.mousedownFlag && moveFlag) {
         this.dragFlag = true
 
         if (this.lastResetDot !== null) {
@@ -236,6 +242,7 @@ export default {
         this.drawDot({
           x: Math.floor(e.offsetX / this.ratio),
           y: Math.floor(e.offsetY / this.ratio),
+          color: this.color,
           save: true
         })
         this.lastResetDot = null
@@ -264,9 +271,11 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.testImg.onload = () => {
-        this.ctx = this.$refs.cv.getContext('2d', {
-          alpha: false
-        })
+        // this.ctx = this.$refs.cv.getContext('2d', {
+        //   alpha: false
+        // })
+        this.ctx = this.$refs.cv.getContext('2d')
+        this.ctx.drawImage(this.testImg, 0, 0)
         // this.removeImgSmooth()
         this.init()
       }
@@ -318,9 +327,15 @@ export default {
   border 1px solid #eee
   overflow hidden
   font-size 0
+
+  .test {
+    display block
+    background #fff
+    cursor default
+    outline none
+    -webkit-tap-highlight-color rgba(255, 255, 255, 0)
+  }
 }
 
-.can-move {
-  cursor move
-}
+.can-move {}
 </style>
