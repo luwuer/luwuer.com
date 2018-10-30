@@ -8,6 +8,11 @@
             :width="width"
             :height="height">
     </canvas>
+    <canvas ref="_cv"
+            class="hidden"
+            :width="width / 2"
+            :height="height / 2">
+    </canvas>
   </div>
 </template>
 
@@ -28,6 +33,7 @@ export default {
   },
   data() {
     return {
+      imageObject: new Image(),
       dragFlag: false, // 鼠标移动标识
       mousedownFlag: false, // 鼠标按下标识
       ratio: config.RATIO.default, // 像素放大倍率，一个最小控制方块 = ratio * ratio （个像素）
@@ -63,6 +69,9 @@ export default {
       let b = parseInt(this.color.slice(5, 7), 16)
       console.log(r, g, b)
       return [r, g, b, 255]
+    },
+    dots() {
+      return null
     }
   },
   methods: {
@@ -70,36 +79,69 @@ export default {
       getImageData().then(data => {
         console.log(data)
         this.resourceData = data
-        this.drawResource(data)
+        this.initCanvas()
+        // this.drawResource(data)
       })
     },
-    drawResource(data) {
+    initCanvas() {
       console.time()
-      // let imageData = new ImageData(Uint8ClampedArray.from(data.data), data.width, data.length)
-      // this.ctx.putImageData(imageData, 0, 0, 0, 0, this.width, this.height)
-      let pixelData = data.data
-      let width = data.width
+      this.removeImgSmooth()
+      // 画入隐藏canvas
+      let imageData = new ImageData(
+        Uint8ClampedArray.from(this.resourceData.data),
+        this.resourceData.width,
+        this.resourceData.length
+      )
+      this.$refs._cv
+        .getContext('2d')
+        .putImageData(imageData, 0, 0, 0, 0, this.width, this.height)
 
-      for (let index = 0; index < pixelData.length; index += 4) {
-        let x = (index / 4) % width
-        let y = Math.floor(index / 4 / width)
-        let color = this.tranArrToColor([
-          pixelData[index],
-          pixelData[index + 1],
-          pixelData[index + 2],
-          pixelData[index + 3]
-        ])
-        this.drawDot({
-          x,
-          y,
-          color
-        })
+      // 图片赋值
+      let imageObject = new Image()
+      imageObject.src = this.$refs._cv.toDataURL()
+
+      this.ctx.clearRect(0, 0, this.width, this.height)
+      // 设置缩放
+      this.ctx.scale(this.ratio, this.ratio)
+
+      imageObject.onload = () => {
+        this.ctx.drawImage(imageObject, 0, 0)
+
+        console.timeEnd()
       }
-      console.timeEnd()
     },
+    // drawResource(data) {
+    //   console.time()
+    //   let imageData = new ImageData(Uint8ClampedArray.from(data.data), data.width, data.length)
+    //   this.ctx.putImageData(imageData, 0, 0, 0, 0, this.width * 2, this.height * 2)
+    //   this.ctx.scale(this.ratio, this.ratio)
+
+    //   let pixelData = data.data
+    //   let width = data.width
+
+    //   for (let index = 0; index < pixelData.length; index += 4) {
+    //     let x = (index / 4) % width
+    //     let y = Math.floor(index / 4 / width)
+    //     let color = this.tranArrToColor([
+    //       pixelData[index],
+    //       pixelData[index + 1],
+    //       pixelData[index + 2],
+    //       pixelData[index + 3]
+    //     ])
+    //     this.drawDot({
+    //       x,
+    //       y,
+    //       color
+    //     })
+    //   }
+    //   console.timeEnd()
+    // },
     drawDot({ x, y, color = this.color, save = false }) {
+      // this.ctx.scale(1, 1)
+      // debugger
       this.ctx.fillStyle = color || this.color
-      this.ctx.fillRect(x * this.ratio, y * this.ratio, this.ratio, this.ratio)
+      // this.ctx.fillRect(x * this.ratio, y * this.ratio, this.ratio, this.ratio)
+      this.ctx.fillRect(x, y, 1, 1)
 
       if (save) {
         // 保存点数据请求
@@ -146,23 +188,27 @@ export default {
     },
     largen() {
       if (this.ratio < config.RATIO.max) {
-        this.ratio += config.RATIO.default * 2
-        this.ctx.scale(this.canvasRatio, this.canvasRatio)
-        // this.$nextTick(() => {
-        //   this.drawResource(this.resourceData)
-        // })
-        // this.ratio = config.RATIO.max
+        this.imageObject.src = this.$refs.cv.toDataURL()
+
+        this.ratio = config.RATIO.max
+        // this.ratio += config.RATIO.default * 2
+
+        this.$nextTick(() => {
+          // this.drawResource(this.resourceData)
+          this.initCanvas()
+        })
       }
     },
     shrink() {
       if (this.ratio > config.RATIO.min) {
-        this.ratio -= config.RATIO.default * 2
-        this.ctx.scale(this.canvasRatio, this.canvasRatio)
-        // this.ratio = config.RATIO.min
+        this.imageObject.src = this.$refs.cv.toDataURL()
+        this.ratio = config.RATIO.min
+        // this.ratio -= config.RATIO.default * 2
 
-        // this.$nextTick(() => {
-        //   this.drawResource(this.resourceData)
-        // })
+        this.$nextTick(() => {
+          // this.drawResource(this.resourceData)
+          this.initCanvas()
+        })
       }
     },
     removeImgSmooth() {
@@ -275,7 +321,8 @@ export default {
         //   alpha: false
         // })
         this.ctx = this.$refs.cv.getContext('2d')
-        this.ctx.drawImage(this.testImg, 0, 0)
+        // this.ctx.scale(5, 5)
+        // this.ctx.drawImage(this.testImg, 0, 0)
         // this.removeImgSmooth()
         this.init()
       }
@@ -335,7 +382,15 @@ export default {
     outline none
     -webkit-tap-highlight-color rgba(255, 255, 255, 0)
   }
+
+  .hidden {
+    position fixed
+    top 0
+    left 0
+    visibility hidden
+  }
 }
 
-.can-move {}
+.can-move {
+}
 </style>

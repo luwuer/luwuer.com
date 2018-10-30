@@ -4,6 +4,6 @@ export default {
   RATIO: {
     default: 2, // canvas default pixel enlargement ratio
     min: 2,
-    max: 8
+    max: 10
   }
 }

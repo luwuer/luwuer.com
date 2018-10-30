@@ -27,7 +27,7 @@ export default {
   },
   mounted() {
     this.ctx = this.$refs.cv.getContext('2d')
-    this.ctx.scale(2, 2)
+    this.ctx.scale(4, 4)
     this.ctx.fillRect(0, 0, 10, 10)
   }
 }
