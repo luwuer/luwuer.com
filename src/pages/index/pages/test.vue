@@ -105,8 +105,14 @@ const colors = [
   '#CC3366',
   '#CCCC00',
   '#FF6633',
-  '#FF6600'
+  '#FF6600',
+  '#FFB700',
+  '#EA1D76',
+  '#675DC6',
+  '#009BDE',
+  '#57C1E8'
 ]
+
 const perLevelHeight = 24
 
 export default {
