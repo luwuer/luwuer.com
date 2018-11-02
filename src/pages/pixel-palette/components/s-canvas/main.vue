@@ -186,7 +186,7 @@ export default {
       let arr = this.resourceData.data.slice(beginIndex, endIndex)
       return this.tranArrToColor(arr)
     },
-    largen() {
+    largen(e) {
       if (this.ratio < config.RATIO.max) {
         this.imageObject.src = this.$refs.cv.toDataURL()
 
@@ -196,6 +196,9 @@ export default {
         this.$nextTick(() => {
           // this.drawResource(this.resourceData)
           this.initCanvas()
+
+          // 定位改变
+          this.resetPosition(e.layerX, e.layerY)
         })
       }
     },
@@ -308,6 +311,9 @@ export default {
       if (e.key === 'Control') {
         this.controlDown = false
       }
+    },
+    resetPosition(centerX, centerY) {
+      console.log(centerX, centerY)
     }
   },
   watch: {},
@@ -330,10 +336,11 @@ export default {
       this.$refs.cv.addEventListener('click', this.clickHandle)
 
       this.$refs.cv.addEventListener('wheel', e => {
+        console.log(e)
         if (e.wheelDelta) {
           // IE Chrome
           if (e.wheelDelta > 0) {
-            this.largen()
+            this.largen(e)
           }
           if (e.wheelDelta < 0) {
             this.shrink()
@@ -341,7 +348,7 @@ export default {
         } else if (e.detail) {
           // Firefox
           if (e.detail > 0) {
-            this.largen()
+            this.largen(e)
           }
           if (e.detail < 0) {
             this.shrink()

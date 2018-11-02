@@ -7,8 +7,8 @@
     <p id="p1"
        draggable="true"
        @ondragstart="dragstart_handler">This element is draggable.</p>
-    <!-- <h-tree :data="baseData"
-            show-checkbox></h-tree> -->
+    <h-tree :data="baseData"
+            show-checkbox></h-tree>
   </div>
 </template>
 
