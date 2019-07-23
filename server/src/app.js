@@ -14,6 +14,9 @@ const koaLogger = require('koa-logger')
 const useRoutes = require('./routes')
 const config = require('../config')
 
+// 重载require，添加别名
+require('./assets/js/require-reload.js')
+
 const app = new Koa()
 
 // session存储配置

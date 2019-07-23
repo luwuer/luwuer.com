@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.4.6",
+    "h_ui": "^1.0.20-patch1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
@@ -63,7 +64,7 @@
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
     "webpack": "^3.6.0",
-    "webpack-bundle-analyzer": "^2.9.0",
+    "webpack-bundle-analyzer": "^3.3.2",
     "webpack-dev-server": "^2.9.1",
     "webpack-merge": "^4.1.0"
   },

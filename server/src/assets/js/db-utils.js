@@ -1,4 +1,4 @@
-const { query } = require('../../../init/util/db.js')
+const { query } = require('./db')
 console.log(query)
 
 let insertData = function (table, values) {

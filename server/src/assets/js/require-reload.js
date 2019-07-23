@@ -3,7 +3,7 @@ const path = require('path')
 
 const Module = require('module')
 const aliasMap = {
-  '@': config.root
+  '@': path.resolve(config.root, 'src')
 }
 
 Module.prototype.require = dir => {
@@ -24,5 +24,6 @@ function addAlias(obj) {
 }
 
 module.exports = {
+  aliasMap,
   addAlias
 }
