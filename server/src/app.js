@@ -4,30 +4,31 @@
 // const views = require('koa-views')
 // const koaStatic = require('koa-static')
 
-require('./assets/js/require-reload.js')
+// require('./assets/js/require-reload.js')
 const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 const koaLogger = require('koa-logger')
-const session = require('koa-session-minimal')
-const MysqlStore = require('koa-mysql-session')
+// const session = require('koa-session-minimal')
+// const MysqlStore = require('koa-mysql-session')
 
+const useRoutes = require('./routes')
 const config = require('../config')
 
 const app = new Koa()
 
 // session存储配置
-const sessionMysqlConfig = {
-  user: config.database.USERNAME,
-  password: config.database.PASSWORD,
-  database: config.database.DATABASE,
-  host: config.database.HOST
-}
+// const sessionMysqlConfig = {
+//   user: config.database.USERNAME,
+//   password: config.database.PASSWORD,
+//   database: config.database.DATABASE,
+//   host: config.database.HOST
+// }
 
 // 配置session中间件
-app.use(session({
-  key: 'USER_SID',
-  store: new MysqlStore(sessionMysqlConfig)
-}))
+// app.use(session({
+//   key: 'USER_SID',
+//   store: new MysqlStore(sessionMysqlConfig)
+// }))
 
 // 配置控制台日志中间件
 app.use(koaLogger())
@@ -45,9 +46,8 @@ app.use(bodyParser())
 //   extension: 'ejs'
 // }))
 
-// 初始化路由中间件
-// const routers = require('./routers/index')
-// app.use(routers.routes()).use(routers.allowedMethods())
+// 路由
+useRoutes(app)
 
 // 监听启动端口
 app.listen(config.port)
