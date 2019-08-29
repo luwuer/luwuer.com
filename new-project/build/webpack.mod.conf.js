@@ -27,8 +27,8 @@ const generateModConfig = mod => {
     resolve: {
       alias: {
         '@': resolve('src'),
-        '@mod-a': resolve('src/modules/mod-a'),
-        '@mod-b': resolve('src/modules/mod-b')
+        '@demo': resolve('src/modules/demo'),
+        '@pixel': resolve('src/modules/pixel')
       }
     },
     optimization: {

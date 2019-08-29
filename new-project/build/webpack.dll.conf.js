@@ -1,14 +1,20 @@
 const webpack = require('webpack')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const { resolve } = require('./utils')
+const {
+  CleanWebpackPlugin
+} = require('clean-webpack-plugin')
+const {
+  resolve
+} = require('./utils')
 
 const libs = {
-  _frame: ['vue', 'vue-router', 'vuex']
+  _frame: ['vue', 'vue-router', 'vuex', 'element-ui']
 }
 
 module.exports = {
   mode: 'production',
-  entry: { ...libs },
+  entry: {
+    ...libs
+  },
   performance: false,
   output: {
     path: resolve('dll'),

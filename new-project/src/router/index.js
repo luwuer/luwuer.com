@@ -5,7 +5,7 @@ import {
   splitModName,
   getModResources,
   generateRoutes
-} from '../utils/module'
+} from '../assets/js/utils/module'
 
 Vue.use(Router)
 

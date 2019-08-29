@@ -21,10 +21,11 @@ let webpackConfig = {
     extensions: ['.vue', '.js'],
     alias: {
       '@': resolve('src'),
-      '@mod-a': resolve('src/modules/mod-a'),
-      '@mod-b': resolve('src/modules/mod-b')
+      '@root': resolve(),
+      '@demo': resolve('src/modules/demo'),
+      '@pixel': resolve('src/modules/pixel')
     },
-    modules: [resolve('./node_modules')]
+    modules: [resolve('node_modules')]
   },
   performance: false,
   module: {

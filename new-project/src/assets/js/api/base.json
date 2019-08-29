@@ -1,0 +1,10 @@
+{
+  "demo": [{
+    "name": "login",
+    "path": "/mod/demo/login"
+  }],
+  "pixel": [{
+    "name": "board",
+    "path": "/mod/pixel/board"
+  }]
+}

@@ -1,30 +1,60 @@
 <template>
   <div class="index">
-    <h1>
-      这是首页
-    </h1>
-    <h3>访问模块 A 的 store.des : {{modADes}}</h3>
-    <h3>访问模块 B 的 store.des : {{modBDes}}</h3>
+    <!-- <background class="bg"></background> -->
+    <div class="cover"></div>
+    <div class="content-wrapper">
+      <i-content></i-content>
+    </div>
   </div>
 </template>
 
 <script>
-import { counter } from '@/utils'
-import { mapGetters } from 'vuex'
-
+import background from '@/components/background/main'
+import iContent from './content'
 export default {
   name: 'index',
-  computed: {
-    ...mapGetters(['modADes', 'modBDes'])
-  },
-  created() {
-    counter()
-    console.log('home:', counter.count)
-    console.log(this.$store)
+  components: {
+    background,
+    iContent
   }
 }
 </script>
 
 <style lang="stylus" scoped>
-@import '~@/styles/main.styl';
+.index {
+  .bg {
+    filter: blur(64px);
+  }
+
+  .cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    // width: calc(100% - 20px);
+    // height: calc(100% - 20px);
+    // border: 10px solid #fff;
+    // filter: blur(6px);
+    // background: url('~@/assets/imgs/3.min.jpg');
+    // background-size: cover;
+    // filter: blur(64px);
+    width: 100%;
+    height: 100%;
+    background: #000;
+  }
+
+  .content-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    background: url('~@/assets/imgs/3.min.jpg');
+    background-size: cover;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: hue-rotate 90s infinite linear;
+  }
+}
 </style>

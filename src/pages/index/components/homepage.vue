@@ -1,7 +1,9 @@
 <template>
   <div id="homepage"
-       ref="homepage" :class="{blur: !initImgLoad}">
-    <div class="home-bgs" :class="{transparent: !initImgLoad}">
+       ref="homepage"
+       :class="{blur: !initImgLoad}">
+    <div class="home-bgs"
+         :class="{transparent: !initImgLoad}">
       <canvas ref="canvas-bg"
               class="home-bg">
         您的浏览器不支持Canvas，请升级浏览器版本</canvas>
@@ -11,7 +13,7 @@
         您的浏览器不支持Canvas，请升级浏览器版本</canvas>
     </div>
     <div class="home-contents">
-      test.......
+      home-contents
     </div>
   </div>
 </template>
@@ -66,7 +68,7 @@ function renderImg(
   ctx,
   chunks,
   num = chunks.length - 1,
-  perNum = Math.floor(chunks.length / 100)
+  perNum = Math.floor(chunks.length / 12)
 ) {
   // 未渲染块数等于图片块长度时打乱图片块
   if (num === chunks.length - 1) chunks = shuffle(chunks)
@@ -82,7 +84,7 @@ function renderImg(
   if (num > 0) {
     setTimeout(() => {
       renderImg(ctx, chunks, num - perNum, perNum)
-    }, 5)
+    }, 30)
   }
 }
 
@@ -160,7 +162,7 @@ export default {
         img.onload = () => {
           this.initImgLoad = true
           ctx.drawImage(img, 0, 0, this.winInfo.ww, this.winInfo.wh)
-          let chunks = this.getChunks(ctx, 12)
+          let chunks = this.getChunks(ctx, 120)
           renderImg(this.canvasCover.getContext('2d'), chunks)
         }
       }
@@ -209,39 +211,39 @@ export default {
 
 <style lang="stylus" scoped>
 .transparent {
-  opacity 0
+  opacity: 0;
 }
 
 .opacity {
-  opacity 1
+  opacity: 1;
 }
 
 .blur {
-  filter blur(66px)
+  filter: blur(66px);
 }
 
 #homepage {
-  overflow hidden
-  background url('~@index/assets/img/3.min.jpg')
-  background-size cover
-  // transition all 1s
+  overflow: hidden;
+  background: url('~@index/assets/img/3.min.jpg');
+  background-size: cover;
 
+  // transition all 1s
   .home-bgs {
-    transition all 2s
+    transition: all 2s;
 
     .home-bg-cover {
-      position fixed
-      top 0
-      left 0
+      position: fixed;
+      top: 0;
+      left: 0;
     }
   }
 
   .home-contents {
-    position fixed
-    top 0
-    left 0
-    width 100%
-    height 100%
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 }
 </style>
