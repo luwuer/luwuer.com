@@ -168,6 +168,7 @@ export default {
       padding-bottom: 4px;
 
       .color-item {
+        box-sizing: border-box;
         display: inline-block;
         height: 24px;
         width: 24px;
