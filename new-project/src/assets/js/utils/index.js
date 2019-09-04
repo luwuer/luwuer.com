@@ -6,7 +6,6 @@ const randomColor = () => {
   return `rgb(${r}, ${g}, ${b})`
 }
 
-
 export {
   randomColor
 }

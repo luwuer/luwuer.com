@@ -14,10 +14,6 @@
              target="_blank"
              title="GitHub"
              class="tag">
-            <!-- <svg class="icon"
-                 aria-hidden="true">
-              <use xlink:href="#icon-github"></use>
-            </svg> -->
             GitHub
           </a>
           <a href="https://juejin.im/user/5a3780546fb9a0451f3109de"
@@ -71,27 +67,15 @@ export default {
           des:
             '某个夏天看到 bilibili 夏日祭绘板玩的人很多，大家齐心协力画出了很多有趣的图像和标识，于是想着自己也写一个试试，2019 年暑假第二次优化。',
           path: '/mod/pixel/board'
-        },
-        {
-          name: 'PostLOS',
-          des:
-            'Post Little Order Sister ，邮差小姐姐，一个接口调试网站。通常我在本地部署该项目，后端通过 IP 和端口可以在这个网站上调试接口，相比 Postman 的优势在于可以验证 CORS 是否配置无误。',
-          path: '/mod/demo/login'
         }
+        // {
+        //   name: 'PostLOS',
+        //   des:
+        //     'Post Little Order Sister ，邮差小姐姐，一个接口调试网站。通常我在本地部署该项目，后端通过 IP 和端口可以在这个网站上调试接口，相比 Postman 的优势在于可以验证 CORS 是否配置无误。',
+        //   path: '/mod/demo/login'
+        // }
       ]
     }
-  },
-  mounted() {
-    // console.log(
-    //   'this.$store.getters.themeColor:',
-    //   this.$store.getters.themeColor
-    // )
-    // setTimeout(() => {
-    //   console.log(
-    //     'this.$store.getters.themeColor:',
-    //     this.$store.getters.themeColor
-    //   )
-    // }, 1000)
   }
 }
 </script>

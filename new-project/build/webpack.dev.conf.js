@@ -16,7 +16,9 @@ module.exports = {
     inline: true,
     proxy: {
       '/api': {
-        target: 'http://10.20.23.209:8089/',
+        target: 'http://43.226.147.135:3000/', // 三丰云
+        // target: 'http://45.76.209.110:3000/', // Tokyo
+        // target: 'http://127.0.0.1:3000/',
         pathRewrite: {
           '/api': ''
         }

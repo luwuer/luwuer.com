@@ -1,8 +1,5 @@
 <template>
   <div id="app">
-    <!-- <router-link to="/">Home</router-link>
-    <router-link to="/mod/a/a/a">Module A</router-link>
-    <router-link to="/mod/b/a/a">Module B</router-link> -->
     <router-view></router-view>
   </div>
 </template>
@@ -15,4 +12,8 @@ export default {
 
 <style lang="stylus">
 @import '~@/assets/styles/main.styl';
+
+#app {
+  text-align: center;
+}
 </style>

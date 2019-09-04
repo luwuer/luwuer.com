@@ -1,5 +1,3 @@
-// import _ from 'lodash'
-// import('lodash')
 // 预加载
 // import( /* webpackPreload: true, webpackChunkName: "dependencies/lodash" */ 'lodash')
 // 预取
@@ -10,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './router'
 import store from './store'
+import './assets/js/directives'
 
 Vue.use(ElementUI)
 

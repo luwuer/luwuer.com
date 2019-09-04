@@ -1,27 +1,6 @@
 import http from './http.js' // eslint-disable-line
 
-/**
- * @description 获取图片数据
- */
-// const getImageData = () => {
-//   // return http.get('pixelPalette/getImageData')
-//   let test = Array(512 * 288 * 4).fill(255)
-//   // dot 1
-//   test[0] = 255
-//   test[1] = 102
-//   test[2] = 102
-//   // dot 2
-//   test[4] = 255
-//   test[5] = 102
-//   test[6] = 102
-//   return Promise.resolve({
-//     width: 512, // 1024 / 2
-//     height: 288, // 576 / 2
-//     // data: Uint8ClampedArray.from(test)
-//     data: test
-//   })
-// }
-
+// 获取图片数据 for test
 const getImageData = () => {
   // return http.get('pixelPalette/getImageData')
   let test = Array(1024 * 512 * 4).fill(255)
@@ -45,10 +24,64 @@ const getImageData = () => {
   return Promise.resolve({
     width: 1024,
     height: 512,
-    // data: Uint8ClampedArray.from(test)
     data: test
   })
 }
+
+/**
+ * @description 注册
+ * @param {String} name 昵称
+ */
+const register = name => {
+  return http.post('/user/register', {
+    name
+  }).then(data => {
+    return data
+  })
+}
+
+/**
+ * @description 获取系统信息
+ */
+const getSysInfo = () => {
+  return http.get('/sysInfo').then(data => data.data)
+}
+
+/**
+ * @description 获取像素点附加信息
+ * @param {Number} index 像素点位置
+ */
+const getDotInfo = index => {
+  return http.get('/dotInfo', {
+    index
+  }).then(data => data.data)
+}
+
+/**
+ * @description 获取聊天历史
+ */
+const getChatHistory = () => {
+  return http.get('/chartHistory')
+}
+
+/**
+ * @description 发送消息
+ */
+const sendChat = (content, user, way) => {
+  let timestamp = new Date().getTime()
+  return http.post('/newChat', {
+    timestamp,
+    content,
+    user,
+    way
+  })
+}
+
 export {
-  getImageData
+  getImageData,
+  getDotInfo,
+  register,
+  getSysInfo,
+  getChatHistory,
+  sendChat
 }

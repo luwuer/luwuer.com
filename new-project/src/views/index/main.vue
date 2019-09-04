@@ -22,6 +22,8 @@ export default {
 
 <style lang="stylus" scoped>
 .index {
+  text-align: left;
+
   .bg {
     filter: blur(64px);
   }
