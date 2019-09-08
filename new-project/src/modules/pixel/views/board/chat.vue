@@ -4,7 +4,7 @@
     <div class="display"
          v-if="pixelTalkWays.length"
          v-scrollBottom
-         :style="{height: height - 108 + 'px'}">
+         :style="{height: height - 101 + 'px'}">
       <ul class="msgs">
         <li class="msg-list"
             v-for="(msg, index) in msgs"
@@ -68,7 +68,7 @@ export default {
       'pixelUserName'
     ]),
     height() {
-      return 600 - 16 - this.pixelNoticeHeight - this.pixelLoginHeight
+      return 600 - 14 - this.pixelNoticeHeight - this.pixelLoginHeight
     }
   },
   methods: {
@@ -80,13 +80,12 @@ export default {
 
       // 接收最新推送消息
       window.socket.on('newChat', data => {
-        console.log(data)
         if (this.msgs.length === 50) {
-          this.msgs.splice(50, data)
-        } else {
-          this.msgs.push(data)
+          this.msgs.shift()
         }
-      })      
+
+        this.msgs.push(data)
+      })
     },
     randomColor(way) {
       if (way === '娇喘') {
@@ -115,8 +114,19 @@ export default {
       } else if (e.key === 'Enter') {
         if (!this.ctrlDown) return
 
+        if (!this.pixelUserName) {
+          e.preventDefault()
+          this.$notify.info({
+            title: '提示',
+            message: '请先填写常用昵称'
+          })
+
+          return
+        }
+
         let way = this.randomTalkWay()
         if (way === '娇喘' || way === '失去生殖器') way = this.randomTalkWay()
+
         sendChat(this.input, this.pixelUserName, way)
         this.input = ''
       }

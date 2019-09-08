@@ -13,7 +13,8 @@
           <el-input v-model="name"
                     :minlength="1"
                     :maxlength="20"
-                    placeholder="请输入你的常用昵称"></el-input>
+                    placeholder="请输入你的常用昵称"
+                    @keyup.enter.native="register"></el-input>
         </el-col>
         <el-col :span="4">
           <el-button type="primary"
@@ -48,6 +49,9 @@ export default {
       if (!this.name) return
 
       register(this.name).then(data => {
+        // 用户名已被注册
+        if (data.code === 4001) return
+
         if (data.code !== 0) {
           this.$notify.error({
             title: '错误',
@@ -55,11 +59,14 @@ export default {
           })
         }
 
-        console.log(this.$store)
-        console.log(this.$store.pixel)
-
-        this.$store.commit('pixelSetName', this.name)
-        console.log(this.$store.getters.pixelUserName)
+        this.$store.commit('pixelSetName', data.name)
+        this.$notify({
+          title: '成功',
+          message: `您是本画板的第${
+            data.count
+          }位注册用户，快在画板上留下你的作品吧~`,
+          type: 'success'
+        })
       })
     }
   },

@@ -69,12 +69,18 @@ const getChatHistory = () => {
  */
 const sendChat = (content, user, way) => {
   let timestamp = new Date().getTime()
-  return http.post('/newChat', {
+  window.socket.emit('newChat', {
     timestamp,
     content,
     user,
     way
   })
+  // return http.post('/newChat', {
+  //   timestamp,
+  //   content,
+  //   user,
+  //   way
+  // })
 }
 
 export {

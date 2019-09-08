@@ -3,14 +3,15 @@
 // 预取
 // import( /* webpackPrefetch: true, webpackChunkName: "dependencies/lodash" */ 'lodash')
 import Vue from 'vue'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './router'
 import store from './store'
-import './assets/js/directives'
 
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI)
+
+import './assets/js/directives'
 
 new Vue({
   router,

@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import config from '@root/static/pixel-palette/config'
 import sColorPicker from '@pixel/components/s-color-picker/index'
 import img_1 from '@/assets/imgs/demo2.png'
 import { getImageData } from '@pixel/assets/js/api'
@@ -36,7 +35,7 @@ export default {
       imageObject: new Image(),
       dragFlag: false, // 鼠标移动标识
       mousedownFlag: false, // 鼠标按下标识
-      ratio: config.RATIO.default, // 像素放大倍率，一个最小控制方块 = ratio * ratio （个像素）
+      ratio: window.config.RATIO.default, // 像素放大倍率，一个最小控制方块 = ratio * ratio （个像素）
       lastResetDot: null,
       level: 1,
       testImg: new Image(),
@@ -52,16 +51,18 @@ export default {
      * @description 画布放大倍率
      */
     canvasRatio() {
-      return this.ratio / config.RATIO.default
+      return this.ratio / window.config.RATIO.default
     },
     width() {
-      return config.WIDTH * this.canvasRatio
+      return window.config.WIDTH * this.canvasRatio
     },
     height() {
-      return config.HEIGHT * this.canvasRatio
+      return window.config.HEIGHT * this.canvasRatio
     },
     wrapperStyle() {
-      return `width: ${config.WIDTH}px; height: ${config.HEIGHT}px`
+      return `width: ${window.config.WIDTH}px; height: ${
+        window.config.HEIGHT
+      }px`
     },
     colorRGBA() {
       let r = parseInt(this.color.slice(1, 3), 16)
@@ -189,11 +190,11 @@ export default {
       return this.tranArrToColor(arr)
     },
     largen(e) {
-      if (this.ratio < config.RATIO.max) {
+      if (this.ratio < window.config.RATIO.max) {
         this.imageObject.src = this.$refs.cv.toDataURL()
 
-        this.ratio = config.RATIO.max
-        // this.ratio += config.RATIO.default * 2
+        this.ratio = window.config.RATIO.max
+        // this.ratio += window.config.RATIO.default * 2
 
         this.$nextTick(() => {
           // this.drawResource(this.resourceData)
@@ -205,10 +206,10 @@ export default {
       }
     },
     shrink() {
-      if (this.ratio > config.RATIO.min) {
+      if (this.ratio > window.config.RATIO.min) {
         this.imageObject.src = this.$refs.cv.toDataURL()
-        this.ratio = config.RATIO.min
-        // this.ratio -= config.RATIO.default * 2
+        this.ratio = window.config.RATIO.min
+        // this.ratio -= window.config.RATIO.default * 2
 
         this.$nextTick(() => {
           // this.drawResource(this.resourceData)

@@ -474,7 +474,12 @@ export default {
     mouseupHandle(e) {
       if (!this.canDraw) return
 
-      if (!this.dragFlag) {
+      if (!this.user) {
+        this.$notify.info({
+          title: '提示',
+          message: '请先填写常用昵称'
+        })
+      } else if (!this.dragFlag) {
         this.drawDot({
           x: Math.floor(e.offsetX / this.ratio),
           y: Math.floor(e.offsetY / this.ratio),
@@ -545,11 +550,12 @@ export default {
     this.height = window.config.pixel.HEIGHT
 
     // socket.io init
-    // window.socket = io('http://127.0.0.1:3000')
-    // window.socket = io('http://45.76.209.110:3000') // Tokyo
-    window.socket = io('http://43.226.147.135:3000') // 三丰云
+    // window.socket = io.connect('http://localhost:3000')
+    // transports: [ 'websocket' ]
+    window.socket = io.connect(window.location.origin.replace(/https/, 'wss'))
     this.loadInfo.push('加载历史数据...')
-    window.socket.emit('getDataUrl')
+
+    // window.socket.emit('getDataUrl')
     window.socket.on('dataUrl', data => {
       this.imageObject.src = data.url
       this.loadInfo.push('渲染图像...')

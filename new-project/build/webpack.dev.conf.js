@@ -14,14 +14,22 @@ module.exports = {
     clientLogLevel: 'none',
     stats: 'minimal',
     inline: true,
+    // https: true,
     proxy: {
+      '/api_local': {
+        target: 'http://127.0.0.1:3000/',
+        pathRewrite: {
+          '/api_local': ''
+        }
+      },
       '/api': {
-        target: 'http://43.226.147.135:3000/', // 三丰云
-        // target: 'http://45.76.209.110:3000/', // Tokyo
-        // target: 'http://127.0.0.1:3000/',
+        target: 'http://43.226.147.135:3000/', // 三丰云 http
         pathRewrite: {
           '/api': ''
         }
+      },
+      '/socket.io': {
+        target: 'http://43.226.147.135:3000/'
       }
     }
   },

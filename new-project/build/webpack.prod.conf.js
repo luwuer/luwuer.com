@@ -27,7 +27,7 @@ const webpackConfig = {
       new OptimizeCSSAssetsPlugin({})
     ],
     splitChunks: {
-      chunks: 'all',
+      chunks: 'async',
       minSize: 20000, // 正常设置 20000+ 即 20k+ ，但这里我们的公共文件只有几行代码，所以设置为 1
       maxSize: 0,
       minChunks: 1,
@@ -61,11 +61,11 @@ const webpackConfig = {
     }
   },
   externals: {
-    lodash: {
-      commonjs: 'lodash',
-      umd: 'lodash',
-      root: '_' // 默认执行环境已经存在全局变量： _ ，浏览器中就是 window._
-    }
+    // lodash: {
+    //   commonjs: 'lodash',
+    //   umd: 'lodash',
+    //   root: '_' // 默认执行环境已经存在全局变量： _ ，浏览器中就是 window._
+    // }
   },
   plugins: [
     new CleanWebpackPlugin(),
