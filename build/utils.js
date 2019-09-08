@@ -1,162 +1,87 @@
-'use strict'
+const webpack = require('webpack')
+const AddAssestHtmlWebpackPlugin = require('add-asset-html-webpack-plugin')
+const glob = require('glob')
+const merge = require('webpack-merge')
 const path = require('path')
-const config = require('../config')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const packageConfig = require('../package.json')
 
-exports.assetsPath = function (_path) {
-  const assetsSubDirectory = process.env.NODE_ENV === 'production'
-    ? config.build.assetsSubDirectory
-    : config.dev.assetsSubDirectory
-
-  return path.posix.join(assetsSubDirectory, _path)
-}
-
-exports.cssLoaders = function (options) {
-  options = options || {}
-
-  const cssLoader = {
-    loader: 'css-loader',
-    options: {
-      sourceMap: options.sourceMap
-    }
-  }
-
-  const postcssLoader = {
-    loader: 'postcss-loader',
-    options: {
-      sourceMap: options.sourceMap
-    }
-  }
-
-  // generate loader string to be used with extract text plugin
-  function generateLoaders (loader, loaderOptions) {
-    const loaders = options.usePostCSS ? [cssLoader, postcssLoader] : [cssLoader]
-
-    if (loader) {
-      loaders.push({
-        loader: loader + '-loader',
-        options: Object.assign({}, loaderOptions, {
-          sourceMap: options.sourceMap
-        })
-      })
-    }
-
-    // Extract CSS when that option is specified
-    // (which is the case during production build)
-    if (options.extract) {
-      return ExtractTextPlugin.extract({
-        use: loaders,
-        fallback: 'vue-style-loader'
-      })
-    } else {
-      return ['vue-style-loader'].concat(loaders)
-    }
-  }
-
-  // https://vue-loader.vuejs.org/en/configurations/extract-css.html
-  return {
-    css: generateLoaders(),
-    postcss: generateLoaders(),
-    less: generateLoaders('less'),
-    sass: generateLoaders('sass', { indentedSyntax: true }),
-    scss: generateLoaders('sass'),
-    stylus: generateLoaders('stylus'),
-    styl: generateLoaders('stylus')
+const _memorize = fn => {
+  const cache = {}
+  return (...args) => {
+    const _args = JSON.stringify(args)
+    return cache[_args] || (cache[_args] = fn.call(this, ...args))
   }
 }
 
-// Generate loaders for standalone style files (outside of .vue)
-exports.styleLoaders = function (options) {
-  const output = []
-  const loaders = exports.cssLoaders(options)
-
-  for (const extension in loaders) {
-    const loader = loaders[extension]
-    output.push({
-      test: new RegExp('\\.' + extension + '$'),
-      use: loader
-    })
-  }
-
-  return output
+const _resolve = (...args) => {
+  return path.join(__dirname, '..', ...args)
 }
 
-exports.createNotifierCallback = () => {
-  const notifier = require('node-notifier')
-
-  return (severity, errors) => {
-    if (severity !== 'error') return
-
-    const error = errors[0]
-    const filename = error.file && error.file.split('!').pop()
-
-    notifier.notify({
-      title: packageConfig.name,
-      message: severity + ': ' + error.name,
-      subtitle: filename || '',
-      icon: path.join(__dirname, 'logo.png')
-    })
-  }
-}
-
-// ---------------------多页面相关---------------------
-// glob是webpack安装时依赖的一个第三方模块，还模块允许你使用 *等符号, 例如lib/*.js就是获取lib文件夹下的所有js后缀名的文件
-var glob = require('glob')
-// 页面模板
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-// 取得相应的页面路径，因为之前的配置，所以是src文件夹下的pages文件夹
-var PAGE_PATH = path.resolve(__dirname, '../src/pages')
-// 用于做相应的merge处理
-var merge = require('webpack-merge')
+const resolve = _memorize(_resolve)
 
 /**
- * @description 多页面入口处理
- *              通过glob模块读取pages文件夹下的所有对应文件夹下的js后缀文件，如果文件存在那么就作为入口处理
+ * @description 引用和 dll 建立映射关系
  */
-exports.entries = function() {
-    var entryFiles = glob.sync(PAGE_PATH + '/*/*.js')
-    var map = {}
-    entryFiles.forEach((filePath) => {
-      var filename = filePath.match(/[\w-_]+(?=(\/[\w-_]+\.js$))/)[0]
-      map[filename] = filePath
+const generateDllReferences = function () {
+  const manifests = glob.sync(`${resolve('dll')}/*.json`)
+
+  return manifests.map(file => {
+    return new webpack.DllReferencePlugin({
+      // context: resolve(''),
+      manifest: file
     })
-    console.log(map)
-    return map
+  })
 }
 
 /**
- * @description 多页面输出配置
- *              与上面的多页面入口配置相同，读取pages文件夹下的对应的html后缀文件，然后放入数组中
+ * @description 把 dll 加入到 html 文件
  */
-exports.htmlPlugin = function() {
-    let entryHtml = glob.sync(PAGE_PATH + '/*/*.html')
-    let arr = []
-    entryHtml.forEach((filePath) => {
-        let filename = filePath.match(/[\w-_]+(?=(\/[\w-_]+\.html$))/)[0]
-        let conf = {
-            // 模板来源
-            template: filePath,
-            // 文件名称
-            filename: filename + '.html',
-            // 页面模板需要加对应的js脚本，如果不加这行则每个页面都会引入所有的js脚本
-            chunks: ['manifest', 'vendor', filename],
-            inject: true
-        }
-        if (process.env.NODE_ENV === 'production') {
-            conf = merge(conf, {
-                minify: {
-                    removeComments: true,
-                    collapseWhitespace: true,
-                    removeAttributeQuotes: true
-                },
-                chunksSortMode: 'dependency'
-            })
-        }
-        arr.push(new HtmlWebpackPlugin(conf))
+const generateAddAssests = function () {
+  const dlls = glob.sync(`${resolve('dll')}/*.js`)
+
+  return dlls.map(file => {
+    return new AddAssestHtmlWebpackPlugin({
+      filepath: file,
+      outputPath: '/dll',
+      publicPath: '/dll'
     })
-    // console.log('htmlPlugins...')
-    // console.log(arr)
-    return arr
+  })
 }
-// ---------------------多页面相关---------------------
+
+/**
+ * @description 生成 webpack 配置文件
+ * @param {String} env 环境
+ * @param {String} modName mod 名， mod 环境下特有属性
+ */
+const generateWebpackConfig = (env, modName = '') => {
+  process.env.NODE_ENV = env
+  if (env === 'production') {
+    return merge(require('./webpack.base.conf'), require('./webpack.prod.conf'))
+  } else if (env === 'mod') {
+    return merge(require('./webpack.base.conf'), require('./webpack.mod.conf')(modName))
+  } else {
+    return merge(require('./webpack.base.conf'), require('./webpack.dev.conf'))
+  }
+}
+
+const webpackStatsPrint = function (stats) {
+  console.log(
+    stats
+    .toString({
+      colors: true,
+      modules: false,
+      // If you are using ts-loader, setting this to true will make TypeScript errors show up during build.
+      children: false,
+      chunks: false,
+      chunkModules: false
+    })
+    .replace(/\n.*?static.*?(?=\n)/g, '') + '\n'
+  )
+}
+
+module.exports = {
+  resolve,
+  generateDllReferences,
+  generateAddAssests,
+  generateWebpackConfig,
+  webpackStatsPrint
+}

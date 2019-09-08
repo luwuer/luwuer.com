@@ -1,48 +1,74 @@
-'use strict'
-// 调用检查node和npm版本
-require('./check-versions')()
-
-// 设置当前是生产环境
-process.env.NODE_ENV = 'production'
-
-// 加载动画
-const ora = require('ora')
-// 删除文件
-const rm = require('rimraf')
-const path = require('path')
-// 对文案输出的一个彩色设置
-const chalk = require('chalk')
 const webpack = require('webpack')
-const config = require('../config')
-const webpackConfig = require('./webpack.prod.conf')
+const chalk = require('chalk')
+const Spinner = require('cli-spinner').Spinner
+const {
+  generateWebpackConfig,
+  webpackStatsPrint
+} = require('./utils')
 
-// 调用start的方法实现加载动画，优化用户体验
-const spinner = ora('building for production...')
-spinner.start()
+// 环境传参
+const env = process.argv[2]
+// 生产环境
+const production = env === 'production'
+// 模块环境
+const mod = env === 'mod'
 
-// 先删除dist文件再生成新文件，因为有时候会使用hash来命名，删除整个文件可避免冗余
-rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
-  if (err) throw err
-  webpack(webpackConfig, (err, stats) => {
-    spinner.stop()
-    if (err) throw err
-    process.stdout.write(stats.toString({
-      colors: true,
-      modules: false,
-      children: false, // If you are using ts-loader, setting this to true will make TypeScript errors show up during build.
-      chunks: false,
-      chunkModules: false
-    }) + '\n\n')
+if (production) {
+  let config = generateWebpackConfig('production')
 
-    if (stats.hasErrors()) {
-      console.log(chalk.red('  Build failed with errors.\n'))
-      process.exit(1)
+  let spinner = new Spinner('building: ')
+  spinner.start()
+
+  webpack(config, (err, stats) => {
+    if (err || stats.hasErrors()) {
+      webpackStatsPrint(stats)
+
+      console.log(chalk.red('× Build failed with errors.\n'))
+      process.exit()
     }
 
-    console.log(chalk.cyan('  Build complete.\n'))
-    console.log(chalk.yellow(
-      '  Tip: built files are meant to be served over an HTTP server.\n' +
-      '  Opening index.html over file:// won\'t work.\n'
-    ))
+    webpackStatsPrint(stats)
+
+    spinner.stop()
+
+    console.log('\n')
+    console.log(chalk.cyan('√ Build complete.\n'))
+    console.log(
+      chalk.yellow(
+        '  Built files are meant to be served over an HTTP server.\n' +
+        '  Opening index.html over file:// won\'t work.\n'
+      )
+    )
   })
-})
+} else if (mod) {
+  const mods = process.argv.splice(3)
+  mods.forEach(modName => {
+    let config = generateWebpackConfig('mod', modName)
+
+    let spinner = new Spinner(`${modName} building: `)
+    spinner.start()
+
+    webpack(config, (err, stats) => {
+      if (err || stats.hasErrors()) {
+        webpackStatsPrint(stats)
+
+        console.log(chalk.red(`× ${modName} build failed with errors.\n`))
+        process.exit()
+      }
+
+      webpackStatsPrint(stats)
+
+      spinner.stop()
+
+      console.log('\n')
+      console.log(chalk.cyan(`√ ${modName} build complete.\n`))
+      console.log(
+        chalk.yellow(
+          '  Module should be loaded by base project.\n'
+        )
+      )
+    })
+  })
+} else {
+  module.exports = generateWebpackConfig('development')
+}

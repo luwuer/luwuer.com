@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[2],{41:function(o){o.exports={demo:[{name:"login",path:"/mod/demo/login"}],pixel:[{name:"board",path:"/mod/pixel/board"}]}}}]);
