@@ -1,5 +1,6 @@
 <template>
-  <div id="board">
+  <div id="board"
+       ref="board">
     <div class="color-pick-wrapper">
       <s-color-picker v-model="color"></s-color-picker>
     </div>
@@ -21,6 +22,7 @@ import login from './login'
 import notice from './notice'
 import chat from './chat'
 import { getSysInfo } from '@pixel/assets/js/api'
+import createFps from 'fps-indicator'
 
 export default {
   name: 'index',
@@ -49,13 +51,28 @@ export default {
         this.$store.commit('pixelSetJokes', data.sbJokes)
         this.$store.commit('pixelSetTalkWays', data.talkWays)
       })
+    },
+    fpsInit() {
+      let board = this.$refs.board
+      let fps = createFps({
+        container: board,
+        position: 'top-right',
+        style: {
+          position: 'absolute',
+          right: '112px',
+          top: '14px',
+          color: '#333'
+        }
+      })
     }
   },
   created() {
     this.init()
   },
   mounted() {
-    this.$
+    this.$nextTick(() => {
+      this.fpsInit()
+    })
   }
 }
 </script>

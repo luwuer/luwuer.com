@@ -19,7 +19,7 @@
     </canvas>
 
     <div class="load-info"
-         :class="{ 'load-info-hide': loadInfoHide }">
+         :class="{ 'load-info-opacity-zero': loadInfoChangeOpacity, 'load-info-hide': loadInfoHide }">
       <p v-for="(info, index) in loadInfo"
          :key="index">
         {{info}}
@@ -99,7 +99,8 @@ export default {
       dotInfo: [],
       infoLoad: false,
       loadInfo: [], // 加载信息显示层
-      loadInfoHide: false // 隐藏加载信息
+      loadInfoChangeOpacity: false, // 隐藏加载信息
+      loadInfoHide: false
     }
   },
   computed: {
@@ -168,7 +169,10 @@ export default {
             ][Math.floor(Math.random() * 10)]
           }...`
         )
-        this.loadInfoHide = true
+        this.loadInfoChangeOpacity = true
+        setTimeout(() => {
+          this.loadInfoHide = true
+        }, 700)
 
         // 赋值源数据
         this.resourceData = this._ctx.getImageData(
@@ -652,8 +656,12 @@ export default {
     }
   }
 
-  .load-info-hide {
+  .load-info-opacity-zero {
     opacity: 0;
+  }
+
+  .load-info-hide {
+    display: none;
   }
 }
 
